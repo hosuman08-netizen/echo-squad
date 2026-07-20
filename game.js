@@ -159,6 +159,7 @@
     const shieldReady = !meta.shieldLast || ((new Date(today()) - new Date(meta.shieldLast)) / 86400000) >= 7;
     $('metaBar').innerHTML =
       '<span class="chip">💎 <b>' + meta.gems + '</b></span>' +
+      (function(){try{return '<span class="chip">💳 p10 <b>'+(window.p10Bal?p10Bal():'?')+'</b></span>';}catch(e){return '';}})() +
       '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b>' + ((meta.streak || 0) >= 3 && shieldReady ? ' 🛡️' : '') + '</span>' +
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">W최고 <b>' + (meta.bestWave||0) + '</b></span>' +
