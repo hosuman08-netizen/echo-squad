@@ -886,7 +886,30 @@
     renderLobby();
   };
 
+  // daily login gift (virtual gems, once/day)
+  try {
+    var loginK = 'echoLogin_' + today();
+    if (!localStorage.getItem(loginK)) {
+      localStorage.setItem(loginK, '1');
+      meta.gems = (meta.gems || 0) + 3;
+      saveMeta(meta);
+      window._echoLoginGift = 3;
+      try { if (window.legionTrack) legionTrack('daily_login', { gems: 3 }); } catch (e) {}
+    }
+  } catch (e) {}
   renderLobby();
+  if (window._echoLoginGift) {
+    try {
+      var bar = $('metaBar');
+      if (bar) {
+        var g = document.createElement('div');
+        g.style.cssText = 'width:100%;margin-top:6px;font-size:12px;color:#e8c56a';
+        g.textContent = '🎁 오늘 첫 접속 · 가상 +' + window._echoLoginGift + '💎';
+        bar.appendChild(g);
+      }
+    } catch (e) {}
+    window._echoLoginGift = 0;
+  }
   track('boot', { app: 'echo-squad' });
 
 /* LEGION_WAVE_39_share_counter */
