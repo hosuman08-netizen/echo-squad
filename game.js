@@ -248,7 +248,7 @@
     cancelAnimationFrame(raf);
     meta.runs += 1;
     const gems = Math.max(2, Math.floor(kills / 8) + wave + (reason === 'clear' ? 12 : 0) + (kills>=50?5:0));
-    meta.gems += gems;
+    meta.gems += gems; try{if(window.p10Grant)p10Grant(1);}catch(e){}
     if (kills > meta.bestKills) meta.bestKills = kills;
     if (wave > meta.bestWave) meta.bestWave = wave;
     saveMeta(meta);
