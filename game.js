@@ -169,21 +169,26 @@
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">W최고 <b>' + (meta.bestWave||0) + '</b></span>' +
       '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
-      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>';
+      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>' +
+      (function(){try{
+        var hist=JSON.parse(localStorage.getItem('echo_last_runs')||'[]').slice(0,3);
+        if(!hist.length) return '';
+        var avg=Math.round(hist.reduce(function(a,b){return a+(b.k||0);},0)/hist.length);
+        return '<span class="chip">📈 최근3 <b>'+avg+'</b>k</span>';
+      }catch(e){return '';}})();
     try{
       var d=JSON.parse(localStorage.getItem('echoDaily_'+today())||'{"kills":0,"runs":0,"share":0}');
       var kp=Math.min(100,Math.round((d.kills||0)/30*100));
-      var rp=d.runs>=1?100:0; var sp=d.share>=1?100:0;
       var barHost=$('metaBar');
+      var barHtml='일일 K <b>'+(d.kills||0)+'/30</b> · R '+(d.runs||0)+' · S '+(d.share||0)+
+        '<div style="height:6px;background:#1c1826;border-radius:4px;margin-top:4px;overflow:hidden"><i style="display:block;height:100%;width:'+kp+'%;background:linear-gradient(90deg,#67e8f9,#e8c56a)"></i></div>';
       if(barHost && !document.getElementById('dailyProgBar')){
         var wrap=document.createElement('div'); wrap.id='dailyProgBar';
         wrap.style.cssText='width:100%;margin-top:6px;font-size:11px;opacity:.9';
-        wrap.innerHTML='일일 K <b>'+(d.kills||0)+'/30</b> · R '+(d.runs||0)+' · S '+(d.share||0)+
-          '<div style="height:6px;background:#1c1826;border-radius:4px;margin-top:4px;overflow:hidden"><i style="display:block;height:100%;width:'+kp+'%;background:linear-gradient(90deg,#67e8f9,#e8c56a)"></i></div>';
+        wrap.innerHTML=barHtml;
         barHost.appendChild(wrap);
       } else if(document.getElementById('dailyProgBar')){
-        document.getElementById('dailyProgBar').innerHTML='일일 K <b>'+(d.kills||0)+'/30</b> · R '+(d.runs||0)+' · S '+(d.share||0)+
-          '<div style="height:6px;background:#1c1826;border-radius:4px;margin-top:4px;overflow:hidden"><i style="display:block;height:100%;width:'+kp+'%;background:linear-gradient(90deg,#67e8f9,#e8c56a)"></i></div>';
+        document.getElementById('dailyProgBar').innerHTML=barHtml;
       }
     }catch(e){}
     const box = $('heroPick');
