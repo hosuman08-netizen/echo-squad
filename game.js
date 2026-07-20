@@ -628,7 +628,7 @@
     if (stats.hp === 1 && !window._hpWarn) { window._hpWarn = 1; floaters.push({ x: player.x, y: player.y - 30, text: '위험!', life: 40, color: '#ff5a6a' }); }
     if (stats.hp > 1) window._hpWarn = 0;
     const combo = 1 + Math.min(4, Math.floor(kills / 40));
-    $('hudCombo').textContent = '×' + combo;
+    $('hudCombo').textContent = '×' + combo + (combo>=3?'!':'');
     stats.dmgM = stats.dmgM; // combo visual only for now — apply soft
     $('xpFill').style.width = Math.min(100, (stats.xp / stats.xpNeed) * 100) + '%';
   }
