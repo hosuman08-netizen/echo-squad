@@ -268,12 +268,23 @@
       window._echoTodayBest=tb;
     }catch(e){ window._echoTodayBest=kills; }
     try{ if(kills) bumpDaily('kills', kills); }catch(e){}
+    var last3avg = 0, last3txt = '';
+    try{
+      var hist = JSON.parse(localStorage.getItem('echo_last_runs')||'[]');
+      hist.unshift({k:kills,w:wave,t:Date.now()});
+      hist = hist.slice(0,8);
+      localStorage.setItem('echo_last_runs', JSON.stringify(hist));
+      var slice = hist.slice(0,3);
+      last3avg = Math.round(slice.reduce(function(a,b){return a+(b.k||0);},0)/slice.length);
+      last3txt = ' · 최근3평균 <b>' + last3avg + '</b>k';
+    }catch(e){}
     var claimTxt = window._echoDailyClaimed ? '<br><span style="color:#e8c56a">🎁 일일 3/3 완료 · +15💎 수령</span>' : '';
     window._echoDailyClaimed=false;
     var needK = Math.max(0, 30 - (function(){try{return JSON.parse(localStorage.getItem('echoDaily_'+today())||'{}').kills||0;}catch(e){return 0;}})());
+    var deltaTxt = last3avg ? (kills>=last3avg ? ' · 정진↑' : ' · 한 판 더') : '';
     $('resBody').innerHTML =
       '처치 <b>' + kills + '</b> · 웨이브 <b>' + wave + '</b> · Lv <b>' + stats.lv + '</b><br>' +
-      '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems +
+      '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems + last3txt + deltaTxt +
       '<br><span style="color:#a78bfa">오늘 최고 ' + (window._echoTodayBest||kills) + 'kill · 일일 ' + dailyMissionLabel() +
       (needK>0?' · K까지 '+needK:'') + '</span>' + claimTxt +
       (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신! 정진!</span>' : (kills>=30?'<br><span style="color:#67e8f9">고득점 존</span>':''));
