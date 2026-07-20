@@ -108,12 +108,37 @@
     return HEROES.find((h) => h.id === id) || HEROES[0];
   }
 
+  
+  function dailyMissionLabel(){
+    try{
+      var k='echoDaily_'+today();
+      var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
+      var a=d.kills>=30?1:0,b=d.runs>=1?1:0,c=d.share>=1?1:0;
+      return (a+b+c)+'/3';
+    }catch(e){return '0/3';}
+  }
+  function bumpDaily(kind){
+    try{
+      var k='echoDaily_'+today();
+      var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
+      if(kind==='kills') d.kills=(d.kills||0)+1;
+      if(kind==='run') d.runs=1;
+      if(kind==='share') d.share=1;
+      localStorage.setItem(k,JSON.stringify(d));
+      if((d.kills>=30)+(d.runs>=1)+(d.share>=1)>=3){
+        var mk='echoDailyReward_'+today();
+        if(!localStorage.getItem(mk)){ meta.gems+=15; localStorage.setItem(mk,'1'); saveMeta(meta); }
+      }
+    }catch(e){}
+  }
+
   function renderLobby() {
     $('metaBar').innerHTML =
       '<span class="chip">💎 <b>' + meta.gems + '</b></span>' +
       '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b></span>' +
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
-      '<span class="chip">runs <b>' + meta.runs + '</b></span>';
+      '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
+      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>';
     const box = $('heroPick');
     box.innerHTML = '';
     HEROES.forEach((h) => {
@@ -187,7 +212,7 @@
     $('result').hidden = true;
     $('levelup').hidden = true;
     $('pause').hidden = true;
-    track('run_start', { mode: mode, hero: selectedHero });
+    track('run_start', { mode: mode, hero: selectedHero }); try{bumpDaily('run');}catch(e){}
     loop(performance.now());
   }
 
@@ -241,7 +266,7 @@
 
   function shareResult() {
     const text = '에코특공대 ' + kills + 'kill W' + wave + ' · 브라우저 생존 스웜 ' + SHARE_BASE;
-    track('share_peak', { kills: kills });
+    track('share_peak', { kills: kills }); try{bumpDaily('share');}catch(e){}
     if (navigator.share) {
       navigator.share({ title: '에코특공대', text: text, url: SHARE_BASE }).catch(() => {});
     } else if (navigator.clipboard) {
@@ -396,7 +421,7 @@
 
   function killEnemy(i, e) {
     enemies.splice(i, 1);
-    kills += 1;
+    kills += 1; try{ if(kills%5===0) bumpDaily('kills'); }catch(e){}
     const xp = e.elite ? 6 : 2;
     orbs.push({ x: e.x, y: e.y, r: 5, xp: xp, life: 400 });
     if (Math.random() < 0.04) orbs.push({ x: e.x, y: e.y, r: 7, xp: 0, meat: true, life: 300 });
