@@ -213,6 +213,8 @@
     $('levelup').hidden = true;
     $('pause').hidden = true;
     track('run_start', { mode: mode, hero: selectedHero }); try{bumpDaily('run');}catch(e){}
+    try{ if(!localStorage.getItem('echoFirstTip')){ localStorage.setItem('echoFirstTip','1');
+      floaters.push({x:W/2,y:H*0.25,text:'화면 드래그로 이동 · 자동 사격',life:90,color:'#e8c56a'}); } }catch(e){}
     loop(performance.now());
   }
 
