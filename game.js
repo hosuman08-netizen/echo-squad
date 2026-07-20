@@ -51,10 +51,11 @@
         unlocked: m.unlocked || ['scout', 'tank'],
         pity: m.pity || 0,
         hero: m.hero || 'scout',
-        revives: m.revives || 0
+        revives: m.revives || 0,
+        gemsEarned: m.gemsEarned || 0
       };
     } catch (e) {
-      return { gems: 0, bestKills: 0, bestWave: 0, runs: 0, streak: 0, lastDay: '', unlocked: ['scout', 'tank'], pity: 0, hero: 'scout', revives: 0 };
+      return { gems: 0, bestKills: 0, bestWave: 0, runs: 0, streak: 0, lastDay: '', unlocked: ['scout', 'tank'], pity: 0, hero: 'scout', revives: 0, gemsEarned: 0 };
     }
   }
   function saveMeta(m) {
@@ -170,6 +171,7 @@
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">W최고 <b>' + (meta.bestWave||0) + '</b></span>' +
       '<span class="chip">부활 <b>' + (meta.revives||0) + '</b></span>' +
+      '<span class="chip">획득💎 <b>' + (meta.gemsEarned||0) + '</b></span>' +
       '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
       '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>' +
       (function(){try{
@@ -277,7 +279,7 @@
     cancelAnimationFrame(raf);
     meta.runs += 1;
     const gems = Math.max(2, Math.floor(kills / 8) + wave + (reason === 'clear' ? 12 : 0) + (kills>=50?5:0));
-    meta.gems += gems; try{if(window.p10Grant)p10Grant(1);}catch(e){}
+    meta.gems += gems; meta.gemsEarned = (meta.gemsEarned||0) + gems; try{if(window.p10Grant)p10Grant(1);}catch(e){}
     if (kills > meta.bestKills) meta.bestKills = kills;
     if (wave > meta.bestWave) meta.bestWave = wave;
     saveMeta(meta);
