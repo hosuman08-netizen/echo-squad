@@ -205,7 +205,7 @@
     bullets = []; enemies = []; orbs = []; particles = []; floaters = [];
     tLeft = mode === 'sprint' ? 90 : 180;
     wave = 1; kills = 0; spawnAcc = 0; fireAcc = 0; elapsed = 0; shake = 0;
-    running = true; paused = false;
+    running = true; paused = false; window._echoRevived = false;
     $('boot').hidden = true;
     $('c').hidden = false;
     $('hud').hidden = false;
@@ -540,8 +540,16 @@
         shake = 10;
         floaters.push({ x: player.x, y: player.y - 20, text: '-1', life: 30, color: '#ff5a6a' });
         if (stats.hp <= 0) {
-          endGame('dead');
-          return;
+          if (!window._echoRevived && (meta.gems||0) >= 5) {
+            window._echoRevived = true;
+            meta.gems -= 5; saveMeta(meta);
+            stats.hp = 1; player.inv = 1.5; shake = 8;
+            floaters.push({ x: player.x, y: player.y - 24, text: 'REVIVE -5💎', life: 40, color: '#e8c56a' });
+            try { track('revive', {}); } catch (e) {}
+          } else {
+            endGame('dead');
+            return;
+          }
         }
       }
     }
