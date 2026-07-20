@@ -65,16 +65,38 @@
   }
 
   let meta = loadMeta();
-  // streak
+  // streak + Duolingo freeze (1 miss / 7d if streak≥3)
   (function streak() {
     const t = today();
     if (meta.lastDay === t) return;
     const y = new Date(); y.setDate(y.getDate() - 1);
     const yk = y.getFullYear() + '-' + (y.getMonth() + 1) + '-' + y.getDate();
+    const y2d = new Date(); y2d.setDate(y2d.getDate() - 2);
+    const y2 = y2d.getFullYear() + '-' + (y2d.getMonth() + 1) + '-' + y2d.getDate();
+    let froze = false;
+    if (meta.lastDay && meta.lastDay !== yk && meta.lastDay === y2 && (meta.streak || 0) >= 3) {
+      const ready = !meta.shieldLast || ((new Date(t) - new Date(meta.shieldLast)) / 86400000) >= 7;
+      if (ready) {
+        meta.shieldLast = t;
+        meta.lastDay = yk;
+        froze = true;
+        try {
+          setTimeout(function () {
+            const tip = document.createElement('div');
+            tip.textContent = '🛡️ 연속 보호막 · ' + meta.streak + '일 유지';
+            tip.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#16121c;color:#e8c56a;padding:10px 16px;border-radius:12px;z-index:9999;font-size:13px;border:1px solid #e8c56a55';
+            document.body.appendChild(tip);
+            setTimeout(function () { tip.remove(); }, 3000);
+          }, 600);
+        } catch (e) {}
+        try { if (window.legionTrack) legionTrack('streak_freeze', { count: meta.streak }); } catch (e) {}
+      }
+    }
     if (meta.lastDay === yk) meta.streak = (meta.streak || 0) + 1;
     else meta.streak = 1;
     meta.lastDay = t;
     saveMeta(meta);
+    try { if (window.legionTrack) legionTrack('streak', { count: meta.streak, froze: froze }); } catch (e) {}
   })();
 
   const canvas = $('c');
@@ -133,9 +155,10 @@
   }
 
   function renderLobby() {
+    const shieldReady = !meta.shieldLast || ((new Date(today()) - new Date(meta.shieldLast)) / 86400000) >= 7;
     $('metaBar').innerHTML =
       '<span class="chip">💎 <b>' + meta.gems + '</b></span>' +
-      '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b></span>' +
+      '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b>' + ((meta.streak || 0) >= 3 && shieldReady ? ' 🛡️' : '') + '</span>' +
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
       '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>';
@@ -237,9 +260,15 @@
 
     const sp = $('sharePeak');
     sp.innerHTML =
-      '<p>✨ 지금이 공유 타이밍</p>' +
+      '<p>✨ ' + (isPB ? '개인 최고 직후 — 지금 공유하면 K가 붙어요' : '지금이 공유 타이밍') + '</p>' +
       '<button type="button" class="primary" id="btnShare">결과 공유</button>' +
-      '<button type="button" class="secondary" id="btnPipe">☕ 후원 문의</button>';
+      '<button type="button" class="secondary" id="btnPipe">☕ 후원 문의</button>' +
+      '<div id="moneyPipe" style="margin-top:10px;padding:10px;border:1px solid #e8c56a44;border-radius:12px;background:#16121c;font-size:12px">' +
+      '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더 · 크로스</div>' +
+      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/daedalus-conquest/?utm_source=echo&utm_medium=pipe">⚔️ Daedalus</a>' +
+      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/gochess/?utm_source=echo&utm_medium=pipe">♟️ GoChess</a>' +
+      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/legion-hub/?utm_source=echo&utm_medium=pipe">🎮 Arcade</a>' +
+      '</div>';
     $('btnShare').onclick = shareResult;
     $('btnPipe').onclick = () => {
       location.href = 'mailto:hoyashi95@gmail.com?subject=%5B%EC%97%90%EC%BD%94%ED%8A%B9%EA%B3%B5%EB%8C%80%5D%20%ED%9B%84%EC%9B%90';
@@ -249,7 +278,8 @@
     $('hud').hidden = true;
     $('result').hidden = false;
     track('run_end', { kills: kills, wave: wave, reason: reason, gems: gems, pb: isPB });
-    if (isPB) track('share_peak_shown', { kills: kills });
+    track('share_peak_shown', { kills: kills, pb: isPB });
+    try { track('money_pipe_shown', { app: 'echo', kills: kills }); } catch (e) {}
 
     // codex relic
     try {
