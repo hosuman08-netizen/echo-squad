@@ -886,4 +886,7 @@
 
   renderLobby();
   track('boot', { app: 'echo-squad' });
+
+/* LEGION_WAVE_39_share_counter */
+document.addEventListener('click',function(ev){try{var el=ev.target;if(!el)return;var tx=(el.textContent||'')+(el.id||'');if(/share|copy/i.test(tx)||/\uacf5\uc720|\ubcf5\uc0ac/.test(tx)){localStorage.setItem('lw_p44_echo_squ_share_counter',String((+(localStorage.getItem('lw_p44_echo_squ_share_counter')||0))+1));}}catch(e){}},true);
 })();
