@@ -136,7 +136,7 @@
       var k='echoDaily_'+today();
       var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
       var a=d.kills>=30?1:0,b=d.runs>=1?1:0,c=d.share>=1?1:0;
-      return (a+b+c)+'/3';
+      return (a+b+c)+'/3'+(a+b+c>=3?' ✓':'');
     }catch(e){return '0/3';}
   }
   function bumpDaily(kind){
