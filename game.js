@@ -629,7 +629,9 @@
     if (stats.hp > 1) window._hpWarn = 0;
     const combo = 1 + Math.min(4, Math.floor(kills / 40));
     $('hudCombo').textContent = '×' + combo + (combo>=3?'!':'');
-    stats.dmgM = stats.dmgM; // combo visual only for now — apply soft
+    // soft combo: base dmg * combo, store base once
+    if (stats._baseDmgM == null) stats._baseDmgM = stats.dmgM;
+    stats.dmgM = stats._baseDmgM * (1 + (combo - 1) * 0.08);
     $('xpFill').style.width = Math.min(100, (stats.xp / stats.xpNeed) * 100) + '%';
   }
 
