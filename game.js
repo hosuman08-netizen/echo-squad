@@ -140,17 +140,22 @@
       return (a+b+c)+'/3'+(a+b+c>=3?' ✓ ·+15💎':' ·'+bits);
     }catch(e){return '0/3';}
   }
-  function bumpDaily(kind){
+  function bumpDaily(kind, val){
     try{
       var k='echoDaily_'+today();
       var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
-      if(kind==='kills') d.kills=(d.kills||0)+1;
-      if(kind==='run') d.runs=1;
+      // kills = max kills in a single run today (not +1 spam)
+      if(kind==='kills') d.kills=Math.max(d.kills||0, +(val||0));
+      if(kind==='run') d.runs=(d.runs||0)+1;
       if(kind==='share') d.share=1;
       localStorage.setItem(k,JSON.stringify(d));
       if((d.kills>=30)+(d.runs>=1)+(d.share>=1)>=3){
         var mk='echoDailyReward_'+today();
-        if(!localStorage.getItem(mk)){ meta.gems+=15; localStorage.setItem(mk,'1'); saveMeta(meta); }
+        if(!localStorage.getItem(mk)){
+          meta.gems+=15; localStorage.setItem(mk,'1'); saveMeta(meta);
+          window._echoDailyClaimed=true;
+          try{ if(window.legionTrack) legionTrack('daily_claim',{gems:15}); }catch(e){}
+        }
       }
     }catch(e){}
   }
@@ -262,28 +267,22 @@
       if(kills>tb){ localStorage.setItem(tbKey,String(kills)); tb=kills; }
       window._echoTodayBest=tb;
     }catch(e){ window._echoTodayBest=kills; }
-    try{ if(kills) bumpDaily('kills'); }catch(e){}
-    // kills mission needs count of kills not +1 per end — fix: set absolute kills max for day
-    try{
-      var k='echoDaily_'+today();
-      var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
-      d.kills=Math.max(d.kills||0, kills);
-      localStorage.setItem(k,JSON.stringify(d));
-      if((d.kills>=30)+(d.runs>=1)+(d.share>=1)>=3){
-        var mk='echoDailyReward_'+today();
-        if(!localStorage.getItem(mk)){ meta.gems+=15; localStorage.setItem(mk,'1'); saveMeta(meta); }
-      }
-    }catch(e){}
+    try{ if(kills) bumpDaily('kills', kills); }catch(e){}
+    var claimTxt = window._echoDailyClaimed ? '<br><span style="color:#e8c56a">🎁 일일 3/3 완료 · +15💎 수령</span>' : '';
+    window._echoDailyClaimed=false;
+    var needK = Math.max(0, 30 - (function(){try{return JSON.parse(localStorage.getItem('echoDaily_'+today())||'{}').kills||0;}catch(e){return 0;}})());
     $('resBody').innerHTML =
       '처치 <b>' + kills + '</b> · 웨이브 <b>' + wave + '</b> · Lv <b>' + stats.lv + '</b><br>' +
       '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems +
-      '<br><span style="color:#a78bfa">오늘 최고 ' + (window._echoTodayBest||kills) + 'kill · 일일 ' + dailyMissionLabel() + '</span>' +
+      '<br><span style="color:#a78bfa">오늘 최고 ' + (window._echoTodayBest||kills) + 'kill · 일일 ' + dailyMissionLabel() +
+      (needK>0?' · K까지 '+needK:'') + '</span>' + claimTxt +
       (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신! 정진!</span>' : (kills>=30?'<br><span style="color:#67e8f9">고득점 존</span>':''));
 
     const sp = $('sharePeak');
     sp.innerHTML =
       '<p>✨ ' + (isPB ? '개인 최고 직후 — 지금 공유하면 K가 붙어요' : '지금이 공유 타이밍') + '</p>' +
       '<button type="button" class="primary" id="btnShare">결과 공유</button>' +
+      '<button type="button" class="secondary" id="btnAgain">한 판 더</button>' +
       '<button type="button" class="secondary" id="btnPipe">☕ 후원 문의</button>' +
       '<div id="moneyPipe" style="margin-top:10px;padding:10px;border:1px solid #e8c56a44;border-radius:12px;background:#16121c;font-size:12px">' +
       '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더 · 크로스</div>' +
@@ -292,6 +291,13 @@
       '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/legion-hub/?utm_source=echo&utm_medium=pipe">🎮 Arcade</a>' +
       '</div>';
     $('btnShare').onclick = shareResult;
+    var ba=$('btnAgain');
+    if(ba) ba.onclick = function(){
+      $('result').hidden = true;
+      $('c').hidden = false;
+      $('hud').hidden = false;
+      startGame(mode || 'normal');
+    };
     $('btnPipe').onclick = () => {
       location.href = 'mailto:hoyashi95@gmail.com?subject=%5B%EC%97%90%EC%BD%94%ED%8A%B9%EA%B3%B5%EB%8C%80%5D%20%ED%9B%84%EC%9B%90';
     };
@@ -319,15 +325,19 @@
   }
 
   function shareResult() {
-    const text = '에코특공대 ' + kills + 'kill W' + wave + ' · 브라우저 생존 스웜 ' + SHARE_BASE;
-    track('share_peak', { kills: kills }); try{bumpDaily('share');}catch(e){}
+    var kid='';
+    try{ kid=localStorage.getItem('echo_k_id'); if(!kid){kid='e'+Math.random().toString(36).slice(2,8);localStorage.setItem('echo_k_id',kid);} }catch(e){}
+    var url = SHARE_BASE + (SHARE_BASE.indexOf('?')>=0?'&':'?') + 'ref=' + encodeURIComponent(kid);
+    const text = '에코특공대 ' + kills + 'kill W' + wave + ' · 오늘최고 ' + (window._echoTodayBest||kills) + ' · 브라우저 스웜\n' + url;
+    track('share_peak', { kills: kills, k: 1 }); try{bumpDaily('share');}catch(e){}
     if (navigator.share) {
-      navigator.share({ title: '에코특공대', text: text, url: SHARE_BASE }).catch(() => {});
+      navigator.share({ title: '에코특공대', text: text, url: url }).catch(() => {});
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => alert('복사됨 — 붙여넣기 공유!'));
+      navigator.clipboard.writeText(text).then(() => alert('복사됨 — K-ref 포함'));
     } else {
       prompt('복사:', text);
     }
+    try{ renderLobby(); }catch(e){}
   }
 
   function xpGain(n) {
