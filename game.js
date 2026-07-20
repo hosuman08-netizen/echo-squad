@@ -196,6 +196,10 @@
         document.getElementById('dailyProgBar').innerHTML=barHtml;
       }
     }catch(e){}
+    try {
+      var bg = $('btnGacha');
+      if (bg) bg.textContent = '🎰 히어로 소환 💎10 (보유 ' + (meta.gems||0) + ' · 스택 ' + (meta.pity||0) + ')';
+    } catch (e) {}
     const box = $('heroPick');
     box.innerHTML = '';
     HEROES.forEach((h) => {
