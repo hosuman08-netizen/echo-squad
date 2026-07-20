@@ -1,0 +1,9 @@
+{
+  "name": "에코특공대 · Echo Squad",
+  "short_name": "EchoSquad",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0c12",
+  "theme_color": "#e8c56a",
+  "lang": "ko"
+}

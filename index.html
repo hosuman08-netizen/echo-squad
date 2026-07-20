@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>에코특공대 · Echo Squad — 생존 스웜 로그라이크</title>
+  <meta name="description" content="원탭 생존 스웜. 자동 사격·레벨업 빌드·히어로 소환. 탕탕식 하이브리드 캐주얼을 브라우저에서 — 더 미친 콤보·변이·MY 에코. 가상 엔터테인먼트.">
+  <link rel="canonical" href="https://hosuman08-netizen.github.io/echo-squad/">
+  <meta property="og:title" content="에코특공대 · Echo Squad">
+  <meta property="og:description" content="90초 한 판. 스웜 생존 + 빌드 가챠. 설치 없이 바로.">
+  <meta property="og:url" content="https://hosuman08-netizen.github.io/echo-squad/">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div id="boot">
+    <h1>에코특공대</h1>
+    <p class="tag">Echo Squad · 스웜을 뚫고 살아남아라</p>
+    <p class="sub">자동 사격 · 레벨업 3택 · 히어로 소환 · 콤보 변이</p>
+    <div class="stats-bar" id="metaBar"></div>
+    <div class="hero-pick" id="heroPick"></div>
+    <div class="modes">
+      <button class="primary" id="btnSprint">⚡ 90초 질주</button>
+      <button class="secondary" id="btnClassic">⏱ 3분 클래식</button>
+    </div>
+    <button class="ghost" id="btnGacha">🎰 히어로 소환 (가상)</button>
+    <p class="rates">소환 확률(가상): SSR 3% · SR 12% · R 35% · N 50% · 천장 보장 없음(컴프 금지) · 18+ 엔터</p>
+    <div id="gachaOut" class="gacha-out" hidden></div>
+    <nav class="cross">
+      <a href="https://hosuman08-netizen.github.io/daedalus-conquest/">Daedalus</a>
+      <a href="https://hosuman08-netizen.github.io/fate-gacha/">Fate</a>
+      <a href="https://hosuman08-netizen.github.io/legion-hub/">Arcade</a>
+    </nav>
+    <p class="disc">FICTIONAL ENTERTAINMENT · NO CASH VALUE · 탕탕특공대/공식 무관 오마주 학습작 · 18+</p>
+  </div>
+
+  <div id="hud" hidden>
+    <div class="hud-top">
+      <span id="hudTime">1:30</span>
+      <span id="hudWave">W1</span>
+      <span id="hudLv">Lv1</span>
+      <span id="hudCombo">×1</span>
+    </div>
+    <div class="xp-track"><div id="xpFill"></div></div>
+    <div class="hud-bot">
+      <span id="hudKills">0 kill</span>
+      <span id="hudHp">❤❤❤</span>
+      <button type="button" id="btnPause" class="mini">Ⅱ</button>
+    </div>
+  </div>
+
+  <canvas id="c" width="390" height="640" hidden></canvas>
+
+  <div id="levelup" class="modal" hidden>
+    <h2>레벨 업 — 강화 1개</h2>
+    <div id="pick3"></div>
+  </div>
+
+  <div id="result" class="modal" hidden>
+    <h2 id="resTitle">생존 결과</h2>
+    <p id="resBody"></p>
+    <div id="sharePeak" class="share-peak"></div>
+    <button class="primary" id="btnAgain">한 판 더</button>
+    <button class="secondary" id="btnHub">Arcade</button>
+  </div>
+
+  <div id="pause" class="modal" hidden>
+    <h2>일시정지</h2>
+    <button class="primary" id="btnResume">계속</button>
+    <button class="ghost" id="btnQuit">로비</button>
+  </div>
+
+  <script src="lung-surprise-eye.js"></script>
+  <script src="game.js"></script>
+  <script>window.LEGION_APP='echo-squad';window.LEGION_ANALYTICS_URL='https://legion-analytics.hoyashi95.workers.dev';</script>
+  <script src="legion-beacon.js"></script>
+</body>
+</html>
