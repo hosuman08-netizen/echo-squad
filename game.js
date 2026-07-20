@@ -256,7 +256,7 @@
     $('resBody').innerHTML =
       '처치 <b>' + kills + '</b> · 웨이브 <b>' + wave + '</b> · Lv <b>' + stats.lv + '</b><br>' +
       '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems +
-      (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신!</span>' : '');
+      (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신! 정진!</span>' : (kills>=30?'<br><span style="color:#67e8f9">고득점 존</span>':''));
 
     const sp = $('sharePeak');
     sp.innerHTML =
