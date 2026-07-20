@@ -487,7 +487,7 @@
     const newWave = 1 + Math.floor(elapsed / 18);
     if (newWave !== wave) {
       wave = newWave;
-      floaters.push({ x: W / 2, y: H * 0.3, text: 'WAVE ' + wave, life: 50, color: '#e8c56a' });
+      floaters.push({ x: W / 2, y: H * 0.3, text: 'WAVE ' + wave, life: 50, color: '#e8c56a' }); window._ggWaveBanner=1;
       track('wave', { wave: wave });
     }
 
