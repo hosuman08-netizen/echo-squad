@@ -625,6 +625,8 @@
     $('hudWave').textContent = 'W' + wave;
     $('hudKills').textContent = kills + ' kill';
     $('hudHp').textContent = '❤'.repeat(Math.max(0, stats.hp)) + '♡'.repeat(Math.max(0, stats.hpMax - stats.hp));
+    if (stats.hp === 1 && !window._hpWarn) { window._hpWarn = 1; floaters.push({ x: player.x, y: player.y - 30, text: '위험!', life: 40, color: '#ff5a6a' }); }
+    if (stats.hp > 1) window._hpWarn = 0;
     const combo = 1 + Math.min(4, Math.floor(kills / 40));
     $('hudCombo').textContent = '×' + combo;
     stats.dmgM = stats.dmgM; // combo visual only for now — apply soft
