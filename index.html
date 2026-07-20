@@ -75,5 +75,8 @@
   <script src="game.js"></script>
   <script>window.LEGION_APP='echo-squad';window.LEGION_ANALYTICS_URL='https://legion-analytics.hoyashi95.workers.dev';</script>
   <script src="legion-beacon.js"></script>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+</script>
 </body>
 </html>
