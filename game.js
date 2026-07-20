@@ -453,7 +453,7 @@
 
   function killEnemy(i, e) {
     enemies.splice(i, 1);
-    kills += 1; try{ if(kills%5===0) bumpDaily('kills'); }catch(e){}
+    kills += 1; try{ if(kills%5===0) bumpDaily('kills'); if(kills%25===0) floaters.push({x:player.x,y:player.y-20,text:kills+' KILLS',life:45,color:'#e8c56a'}); }catch(e){}
     const xp = e.elite ? 6 : 2;
     orbs.push({ x: e.x, y: e.y, r: 5, xp: xp, life: 400 });
     if (Math.random() < 0.04) orbs.push({ x: e.x, y: e.y, r: 7, xp: 0, meat: true, life: 300 });
