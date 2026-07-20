@@ -161,7 +161,7 @@
       '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b>' + ((meta.streak || 0) >= 3 && shieldReady ? ' 🛡️' : '') + '</span>' +
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
-      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>';
+      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>';
     const box = $('heroPick');
     box.innerHTML = '';
     HEROES.forEach((h) => {
