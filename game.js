@@ -136,7 +136,8 @@
       var k='echoDaily_'+today();
       var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
       var a=d.kills>=30?1:0,b=d.runs>=1?1:0,c=d.share>=1?1:0;
-      return (a+b+c)+'/3'+(a+b+c>=3?' ✓':'');
+      var bits=(a?'K':'k'+(d.kills||0))+(b?'R':'r')+(c?'S':'s');
+      return (a+b+c)+'/3'+(a+b+c>=3?' ✓ ·+15💎':' ·'+bits);
     }catch(e){return '0/3';}
   }
   function bumpDaily(kind){
@@ -254,9 +255,28 @@
 
     const isPB = kills >= meta.bestKills && kills > 0;
     $('resTitle').textContent = reason === 'clear' ? '✅ 타임 클리어!' : reason === 'dead' ? '💀 전사' : '종료';
+    try{
+      var tbKey='echoTodayBest_'+today();
+      var tb=+(localStorage.getItem(tbKey)||0);
+      if(kills>tb){ localStorage.setItem(tbKey,String(kills)); tb=kills; }
+      window._echoTodayBest=tb;
+    }catch(e){ window._echoTodayBest=kills; }
+    try{ if(kills) bumpDaily('kills'); }catch(e){}
+    // kills mission needs count of kills not +1 per end — fix: set absolute kills max for day
+    try{
+      var k='echoDaily_'+today();
+      var d=JSON.parse(localStorage.getItem(k)||'{"kills":0,"runs":0,"share":0}');
+      d.kills=Math.max(d.kills||0, kills);
+      localStorage.setItem(k,JSON.stringify(d));
+      if((d.kills>=30)+(d.runs>=1)+(d.share>=1)>=3){
+        var mk='echoDailyReward_'+today();
+        if(!localStorage.getItem(mk)){ meta.gems+=15; localStorage.setItem(mk,'1'); saveMeta(meta); }
+      }
+    }catch(e){}
     $('resBody').innerHTML =
       '처치 <b>' + kills + '</b> · 웨이브 <b>' + wave + '</b> · Lv <b>' + stats.lv + '</b><br>' +
       '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems +
+      '<br><span style="color:#a78bfa">오늘 최고 ' + (window._echoTodayBest||kills) + 'kill · 일일 ' + dailyMissionLabel() + '</span>' +
       (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신! 정진!</span>' : (kills>=30?'<br><span style="color:#67e8f9">고득점 존</span>':''));
 
     const sp = $('sharePeak');
