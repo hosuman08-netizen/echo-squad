@@ -179,7 +179,8 @@
         if(!hist.length) return '';
         var avg=Math.round(hist.reduce(function(a,b){return a+(b.k||0);},0)/hist.length);
         return '<span class="chip">📈 최근3 <b>'+avg+'</b>k</span>';
-      }catch(e){return '';}})();
+      }catch(e){return '';}})() +
+      '<span class="chip">🎰 소환스택 <b>'+(meta.pity||0)+'</b>/40</span>';
     try{
       var d=JSON.parse(localStorage.getItem('echoDaily_'+today())||'{"kills":0,"runs":0,"share":0}');
       var kp=Math.min(100,Math.round((d.kills||0)/30*100));
@@ -851,8 +852,9 @@
     const out = $('gachaOut');
     out.hidden = false;
     out.innerHTML = '<div style="font-size:22px;margin-bottom:4px">' + rarity + '</div>' + name +
-      '<br><small>확률 고지: SSR3% SR12% R35% N50% · 가상 · 컴프 아님</small>';
-    track('gacha', { rarity: rarity });
+      '<br><small>확률 고지: SSR3% SR12% R35% N50% · 가상 · 컴프 아님</small>' +
+      '<br><small>소환스택 ' + (meta.pity||0) + '/40 (소프트 · 천장 보장 없음 고지)</small>';
+    track('gacha', { rarity: rarity, pity: meta.pity||0 });
   }
 
   // wire UI
