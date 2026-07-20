@@ -50,10 +50,11 @@
         lastDay: m.lastDay || '',
         unlocked: m.unlocked || ['scout', 'tank'],
         pity: m.pity || 0,
-        hero: m.hero || 'scout'
+        hero: m.hero || 'scout',
+        revives: m.revives || 0
       };
     } catch (e) {
-      return { gems: 0, bestKills: 0, bestWave: 0, runs: 0, streak: 0, lastDay: '', unlocked: ['scout', 'tank'], pity: 0, hero: 'scout' };
+      return { gems: 0, bestKills: 0, bestWave: 0, runs: 0, streak: 0, lastDay: '', unlocked: ['scout', 'tank'], pity: 0, hero: 'scout', revives: 0 };
     }
   }
   function saveMeta(m) {
@@ -168,6 +169,7 @@
       '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b>' + ((meta.streak || 0) >= 3 && shieldReady ? ' 🛡️' : '') + '</span>' +
       '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
       '<span class="chip">W최고 <b>' + (meta.bestWave||0) + '</b></span>' +
+      '<span class="chip">부활 <b>' + (meta.revives||0) + '</b></span>' +
       '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
       '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>' +
       (function(){try{
@@ -638,7 +640,7 @@
         if (stats.hp <= 0) {
           if (!window._echoRevived && (meta.gems||0) >= 5) {
             window._echoRevived = true;
-            meta.gems -= 5; saveMeta(meta);
+            meta.gems -= 5; meta.revives=(meta.revives||0)+1; saveMeta(meta);
             stats.hp = 1; player.inv = 1.5; shake = 8;
             floaters.push({ x: player.x, y: player.y - 24, text: 'REVIVE -5💎', life: 40, color: '#e8c56a' });
             try { track('revive', {}); } catch (e) {}
