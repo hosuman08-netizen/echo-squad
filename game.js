@@ -346,9 +346,7 @@
       $('hud').hidden = false;
       startGame(mode || 'normal');
     };
-    $('btnPipe').onclick = () => {
-      location.href = 'mailto:hoyashi95@gmail.com?subject=%5B%EC%97%90%EC%BD%94%ED%8A%B9%EA%B3%B5%EB%8C%80%5D%20%ED%9B%84%EC%9B%90';
-    };
+    if ($('btnPipe')) $('btnPipe').onclick = null;
 
     $('c').hidden = true;
     $('hud').hidden = true;
