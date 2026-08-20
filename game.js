@@ -200,7 +200,12 @@
       var bg = $('btnGacha');
       if (bg) bg.textContent = '🎰 히어로 소환 💎10 (보유 ' + (meta.gems||0) + ' · 스택 ' + (meta.pity||0) + ')';
     } catch (e) {}
-    const box = $('heroPick');
+    fillHeroPick($('heroPick'));
+    fillHeroPick($('resHeroPick'));
+  }
+
+  function fillHeroPick(box) {
+    if (!box) return;
     box.innerHTML = '';
     HEROES.forEach((h) => {
       const locked = meta.unlocked.indexOf(h.id) < 0;
@@ -214,7 +219,8 @@
             meta.gems -= 40;
             meta.unlocked.push(h.id);
             saveMeta(meta);
-            renderLobby();
+            fillHeroPick($('heroPick'));
+            fillHeroPick($('resHeroPick'));
             track('hero_unlock', { id: h.id });
           } else {
             alert('해금 💎40 필요 (한 판 보상으로 모으세요)');
@@ -224,7 +230,8 @@
         selectedHero = h.id;
         meta.hero = h.id;
         saveMeta(meta);
-        renderLobby();
+        fillHeroPick($('heroPick'));
+        fillHeroPick($('resHeroPick'));
       };
       box.appendChild(el);
     });
@@ -329,7 +336,7 @@
       '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더 · 크로스</div>' +
       '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/daedalus-conquest/?utm_source=echo&utm_medium=pipe">⚔️ Daedalus</a>' +
       '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/gochess/?utm_source=echo&utm_medium=pipe">♟️ GoChess</a>' +
-      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/legion-hub/?utm_source=echo&utm_medium=pipe">🎮 Arcade</a>' +
+      '' +
       '</div>';
     $('btnShare').onclick = shareResult;
     var ba=$('btnAgain');
@@ -346,6 +353,7 @@
     $('c').hidden = true;
     $('hud').hidden = true;
     $('result').hidden = false;
+    fillHeroPick($('resHeroPick'));
     track('run_end', { kills: kills, wave: wave, reason: reason, gems: gems, pb: isPB });
     track('share_peak_shown', { kills: kills, pb: isPB });
     try { track('money_pipe_shown', { app: 'echo', kills: kills }); } catch (e) {}
@@ -867,10 +875,9 @@
   $('btnGacha').onclick = doGacha;
   $('btnAgain').onclick = () => {
     $('result').hidden = true;
-    $('boot').hidden = false;
-    renderLobby();
+    startGame(mode || 'sprint');
   };
-  $('btnHub').onclick = () => { location.href = 'https://hosuman08-netizen.github.io/legion-hub/'; };
+  if ($('btnHub')) $('btnHub').onclick = null;
   $('btnPause').onclick = () => {
     if (!running) return;
     paused = true;
@@ -902,19 +909,13 @@
     }
   } catch (e) {}
   renderLobby();
-  if (window._echoLoginGift) {
-    try {
-      var bar = $('metaBar');
-      if (bar) {
-        var g = document.createElement('div');
-        g.style.cssText = 'width:100%;margin-top:6px;font-size:12px;color:#e8c56a';
-        g.textContent = '🎁 오늘 첫 접속 · 가상 +' + window._echoLoginGift + '💎';
-        bar.appendChild(g);
-      }
-    } catch (e) {}
-    window._echoLoginGift = 0;
-  }
+  var loginGift = window._echoLoginGift || 0;
+  window._echoLoginGift = 0;
   track('boot', { app: 'echo-squad' });
+  startGame('sprint');
+  if (loginGift) {
+    try { floaters.push({x:W/2,y:H*0.22,text:'오늘 첫 접속 · 가상 +'+loginGift+'💎',life:90,color:'#e8c56a'}); } catch (e) {}
+  }
 
 /* LEGION_WAVE_39_share_counter */
 document.addEventListener('click',function(ev){try{var el=ev.target;if(!el)return;var tx=(el.textContent||'')+(el.id||'');if(/share|copy/i.test(tx)||/\uacf5\uc720|\ubcf5\uc0ac/.test(tx)){localStorage.setItem('lw_p44_echo_squ_share_counter',String((+(localStorage.getItem('lw_p44_echo_squ_share_counter')||0))+1));}}catch(e){}},true);

@@ -14,7 +14,7 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <div id="boot">
+  <div id="boot" hidden>
     <h1>에코특공대</h1>
     <p class="tag">Echo Squad · 스웜을 뚫고 살아남아라</p>
     <p class="sub">드래그 이동 · 자동 사격 · 레벨 3택 · 부활 1 · 일일 3</p>
@@ -30,7 +30,7 @@
     <nav class="cross">
       <a href="https://hosuman08-netizen.github.io/daedalus-conquest/">Daedalus</a>
       <a href="https://hosuman08-netizen.github.io/fate-gacha/">Fate</a>
-      <a href="https://hosuman08-netizen.github.io/legion-hub/">Arcade</a>
+      
     </nav>
     <p class="disc">FICTIONAL ENTERTAINMENT · NO CASH VALUE · 탕탕특공대/공식 무관 오마주 학습작 · 18+</p>
   </div>
@@ -59,10 +59,12 @@
 
   <div id="result" class="modal" hidden>
     <h2 id="resTitle">생존 결과</h2>
-    <p id="resBody"></p>
+    
+    <p class="sub" id="resHeroLabel">히어로 선택 후 재돌입</p>
+    <div class="hero-pick" id="resHeroPick"></div>
     <div id="sharePeak" class="share-peak"></div>
     <button class="primary" id="btnAgain">한 판 더</button>
-    <button class="secondary" id="btnHub">Arcade</button>
+
   </div>
 
   <div id="pause" class="modal" hidden>
