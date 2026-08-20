@@ -331,12 +331,9 @@
       '<p>✨ ' + (isPB ? '개인 최고 직후 — 지금 공유하면 K가 붙어요' : '지금이 공유 타이밍') + '</p>' +
       '<button type="button" class="primary" id="btnShare">결과 공유</button>' +
       '<button type="button" class="secondary" id="btnAgain">한 판 더</button>' +
-      '<button type="button" class="secondary" id="btnPipe">☕ 후원 문의</button>' +
       '<div id="moneyPipe" style="margin-top:10px;padding:10px;border:1px solid #e8c56a44;border-radius:12px;background:#16121c;font-size:12px">' +
-      '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더 · 크로스</div>' +
+      '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더</div>' +
       '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/daedalus-conquest/?utm_source=echo&utm_medium=pipe">⚔️ Daedalus</a>' +
-      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/gochess/?utm_source=echo&utm_medium=pipe">♟️ GoChess</a>' +
-      '' +
       '</div>';
     $('btnShare').onclick = shareResult;
     var ba=$('btnAgain');
@@ -346,8 +343,6 @@
       $('hud').hidden = false;
       startGame(mode || 'normal');
     };
-    if ($('btnPipe')) $('btnPipe').onclick = null;
-
     $('c').hidden = true;
     $('hud').hidden = true;
     $('result').hidden = false;
@@ -875,7 +870,6 @@
     $('result').hidden = true;
     startGame(mode || 'sprint');
   };
-  if ($('btnHub')) $('btnHub').onclick = null;
   $('btnPause').onclick = () => {
     if (!running) return;
     paused = true;
