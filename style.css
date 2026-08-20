@@ -1,6 +1,7 @@
 :root{
   --bg:#0a0c12;--surf:#141824;--gold:#e8c56a;--red:#ff5a6a;--cyan:#5eead4;
   --txt:#eef1f7;--dim:#8b93a7;--line:#2a3144;
+  --ease-out:cubic-bezier(.2,.8,.2,1);--t-fast:160ms;--t-med:280ms;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--txt);
@@ -22,7 +23,9 @@ h1{font-size:28px;font-weight:800;letter-spacing:-.4px;
 .hero.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
 .hero .emo{font-size:22px;display:block;margin-bottom:4px}
 .modes{display:flex;gap:10px;justify-content:center;margin:12px 0}
-button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer}
+button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;
+  transition:transform var(--t-fast) var(--ease-out),opacity var(--t-fast) var(--ease-out),box-shadow var(--t-med) var(--ease-out)}
+button:active{transform:scale(.98)}
 .primary{background:linear-gradient(135deg,#e8c56a,#c9a227);color:#1a1408}
 .secondary{background:var(--surf);color:var(--txt);border:1px solid var(--line)}
 .ghost{display:block;margin:12px auto;background:transparent;color:var(--dim);font-size:13px}
