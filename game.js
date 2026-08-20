@@ -273,6 +273,7 @@
     bullets = []; enemies = []; orbs = []; particles = []; floaters = [];
     tLeft = mode === 'sprint' ? 90 : 180;
     wave = 1; kills = 0; spawnAcc = 0; fireAcc = 0; elapsed = 0; shake = 0;
+    window._echoCall60 = 0; window._echoCall30 = 0;
     running = true; paused = false; window._echoRevived = false;
     $('boot').hidden = true;
     $('c').hidden = false;
@@ -333,7 +334,7 @@
       '<button type="button" class="secondary" id="btnAgain">한 판 더</button>' +
       '<div id="moneyPipe" style="margin-top:10px;padding:10px;border:1px solid #e8c56a44;border-radius:12px;background:#16121c;font-size:12px">' +
       '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더</div>' +
-      '<a style="color:#ece8f1;margin:0 6px" href="https://hosuman08-netizen.github.io/daedalus-conquest/?utm_source=echo&utm_medium=pipe">⚔️ Daedalus</a>' +
+      '<p style="opacity:.75;margin:0">엔터테인먼트 · 가상 젬 · 18+</p>' +
       '</div>';
     $('btnShare').onclick = shareResult;
     var ba=$('btnAgain');
@@ -370,7 +371,8 @@
     var kid='';
     try{ kid=localStorage.getItem('echo_k_id'); if(!kid){kid='e'+Math.random().toString(36).slice(2,8);localStorage.setItem('echo_k_id',kid);} }catch(e){}
     var url = SHARE_BASE + (SHARE_BASE.indexOf('?')>=0?'&':'?') + 'ref=' + encodeURIComponent(kid);
-    const text = '에코특공대 ' + kills + 'kill W' + wave + ' · 오늘최고 ' + (window._echoTodayBest||kills) + ' · 브라우저 스웜\n' + url;
+    const combo = (document.getElementById('hudCombo') && document.getElementById('hudCombo').textContent) || '×1';
+    const text = '에코특공대 ' + kills + 'kill W' + wave + ' ' + combo + ' · 오늘최고 ' + (window._echoTodayBest||kills) + ' · 90초 스웜\n' + url;
     track('share_peak', { kills: kills, k: 1 }); try{bumpDaily('share');}catch(e){}
     if (navigator.share) {
       navigator.share({ title: '에코특공대', text: text, url: url }).catch(() => {});
@@ -555,6 +557,16 @@
     if (tLeft <= 0) {
       endGame('clear');
       return;
+    }
+    if (mode === 'sprint') {
+      if (!window._echoCall60 && tLeft <= 60) {
+        window._echoCall60 = 1;
+        floaters.push({ x: W / 2, y: H * 0.28, text: '60초', life: 40, color: '#e8c56a' });
+      }
+      if (!window._echoCall30 && tLeft <= 30) {
+        window._echoCall30 = 1;
+        floaters.push({ x: W / 2, y: H * 0.28, text: '막판 30초', life: 50, color: '#ff8a65' });
+      }
     }
 
     // wave
