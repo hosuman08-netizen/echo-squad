@@ -17,18 +17,18 @@
   ];
 
   const POOL = [
-    { id: 'dmg', name: '화력 +18%', apply: (s) => { s.dmgM *= 1.18; } },
-    { id: 'rate', name: '연사 +15%', apply: (s) => { s.rateM *= 1.15; } },
-    { id: 'spd', name: '이동 +12%', apply: (s) => { s.spdM *= 1.12; } },
-    { id: 'multi', name: '멀티샷 +1', apply: (s) => { s.multi += 1; } },
-    { id: 'pierce', name: '관통 +1', apply: (s) => { s.pierce += 1; } },
-    { id: 'magnet', name: '자석 범위', apply: (s) => { s.magnet += 28; } },
-    { id: 'orbit', name: '궤도 블레이드', apply: (s) => { s.orbit = true; s.orbitDmg = (s.orbitDmg || 8) + 6; } },
-    { id: 'nova', name: '처치 노바', apply: (s) => { s.nova = true; } },
-    { id: 'vamp', name: '흡혈 8%', apply: (s) => { s.vamp += 0.08; } },
-    { id: 'crit', name: '치명 +12%', apply: (s) => { s.crit += 0.12; } },
-    { id: 'echo', name: '에코 분신탄', apply: (s) => { s.echo = true; } },
-    { id: 'freeze', name: '슬로우 장판', apply: (s) => { s.slow = true; } }
+    { id: 'dmg', ico: '🔥', name: '화력', stat: '공격 +18%', apply: (s) => { s.dmgM *= 1.18; } },
+    { id: 'rate', ico: '⚡', name: '연사', stat: '공속 +15%', apply: (s) => { s.rateM *= 1.15; } },
+    { id: 'spd', ico: '👟', name: '이동', stat: '속도 +12%', apply: (s) => { s.spdM *= 1.12; } },
+    { id: 'multi', ico: '🎯', name: '멀티샷', stat: '탄 +1', apply: (s) => { s.multi += 1; } },
+    { id: 'pierce', ico: '➡️', name: '관통', stat: '관통 +1', apply: (s) => { s.pierce += 1; } },
+    { id: 'magnet', ico: '🧲', name: '자석', stat: '범위 +28', apply: (s) => { s.magnet += 28; } },
+    { id: 'orbit', ico: '🌀', name: '궤도', stat: '궤도 +6', apply: (s) => { s.orbit = true; s.orbitDmg = (s.orbitDmg || 8) + 6; } },
+    { id: 'nova', ico: '💥', name: '노바', stat: '처치 폭발', apply: (s) => { s.nova = true; } },
+    { id: 'vamp', ico: '🩸', name: '흡혈', stat: '흡혈 +8%', apply: (s) => { s.vamp += 0.08; } },
+    { id: 'crit', ico: '✨', name: '치명', stat: '치명 +12%', apply: (s) => { s.crit += 0.12; } },
+    { id: 'echo', ico: '👻', name: '에코', stat: '분신탄', apply: (s) => { s.echo = true; } },
+    { id: 'freeze', ico: '❄️', name: '슬로우', stat: '장판', apply: (s) => { s.slow = true; } }
   ];
 
   const MUTATIONS = [
@@ -404,7 +404,7 @@
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pick';
-      b.innerHTML = '<b>' + p.name + '</b>';
+      b.innerHTML = '<span class="pick-ico">' + (p.ico || '✦') + '</span><span class="pick-txt"><b>' + p.name + '</b><small>' + (p.stat || '') + '</small></span>';
       b.onclick = () => {
         p.apply(stats);
         $('levelup').hidden = true;
@@ -424,7 +424,7 @@
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'pick';
-    b.innerHTML = '<b>🧬 변이: ' + m.name + '</b><br><small>' + m.desc + '</small>';
+    b.innerHTML = '<span class="pick-ico">🧬</span><span class="pick-txt"><b>' + m.name + '</b><small>' + m.desc + '</small></span>';
     b.onclick = () => {
       m.apply(stats);
       $('levelup').hidden = true;
