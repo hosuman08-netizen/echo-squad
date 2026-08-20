@@ -166,21 +166,8 @@
     const shieldReady = !meta.shieldLast || ((new Date(today()) - new Date(meta.shieldLast)) / 86400000) >= 7;
     $('metaBar').innerHTML =
       '<span class="chip">💎 <b>' + meta.gems + '</b></span>' +
-      (function(){try{return '<span class="chip">💳 p10 <b>'+(window.p10Bal?p10Bal():'?')+'</b></span>';}catch(e){return '';}})() +
-      '<span class="chip">🔥 스트릭 <b>' + meta.streak + '</b>' + ((meta.streak || 0) >= 3 && shieldReady ? ' 🛡️' : '') + '</span>' +
-      '<span class="chip">🏆 최고 <b>' + meta.bestKills + '</b>kill</span>' +
-      '<span class="chip">W최고 <b>' + (meta.bestWave||0) + '</b></span>' +
-      '<span class="chip">부활 <b>' + (meta.revives||0) + '</b></span>' +
-      '<span class="chip">획득💎 <b>' + (meta.gemsEarned||0) + '</b></span>' +
-      '<span class="chip">runs <b>' + meta.runs + '</b></span>' +
-      '<span class="chip">📋 일일 <b>' + dailyMissionLabel() + '</b></span>' +'<span class="chip">정진 목표 <b>' + ((meta.bestKills||0)+10) + 'kill</b></span>' +
-      (function(){try{
-        var hist=JSON.parse(localStorage.getItem('echo_last_runs')||'[]').slice(0,3);
-        if(!hist.length) return '';
-        var avg=Math.round(hist.reduce(function(a,b){return a+(b.k||0);},0)/hist.length);
-        return '<span class="chip">📈 최근3 <b>'+avg+'</b>k</span>';
-      }catch(e){return '';}})() +
-      '<span class="chip">🎰 소환스택 <b>'+(meta.pity||0)+'</b>/40</span>';
+      '<span class="chip">최고 <b>' + meta.bestKills + '</b></span>' +
+      '<span class="chip">오늘 <b>' + dailyMissionLabel() + '</b></span>';
     try{
       var d=JSON.parse(localStorage.getItem('echoDaily_'+today())||'{"kills":0,"runs":0,"share":0}');
       var kp=Math.min(100,Math.round((d.kills||0)/30*100));
@@ -328,22 +315,13 @@
     window._echoDailyClaimed=false;
     var needK = Math.max(0, 30 - (function(){try{return JSON.parse(localStorage.getItem('echoDaily_'+today())||'{}').kills||0;}catch(e){return 0;}})());
     var deltaTxt = last3avg ? (kills>=last3avg ? ' · 정진↑' : ' · 한 판 더') : '';
-    $('resBody').innerHTML =
-      '처치 <b>' + kills + '</b> · 웨이브 <b>' + wave + '</b> · Lv <b>' + stats.lv + '</b><br>' +
-      '획득 💎 <b>' + gems + '</b> · 누적 💎 ' + meta.gems + last3txt + deltaTxt +
-      '<br><span style="color:#a78bfa">오늘 최고 ' + (window._echoTodayBest||kills) + 'kill · 일일 ' + dailyMissionLabel() +
-      (needK>0?' · K까지 '+needK:'') + '</span>' + claimTxt +
-      (isPB ? '<br><span style="color:#e8c56a">🏆 개인 최고 갱신! 정진!</span>' : (kills>=30?'<br><span style="color:#67e8f9">고득점 존</span>':''));
+    var rb = $('resBody');
+    if (rb) rb.innerHTML = kills + '<span class="sub" style="display:block;font-size:13px;font-weight:600;margin-top:6px">' +
+      (isPB ? '개인 최고' : '오늘 최고 ' + (window._echoTodayBest||kills)) +
+      (claimTxt ? ' · 일일 완료' : '') + '</span>';
 
     const sp = $('sharePeak');
-    sp.innerHTML =
-      '<p>✨ ' + (isPB ? '개인 최고 직후 — 지금 공유하면 K가 붙어요' : '지금이 공유 타이밍') + '</p>' +
-      '<button type="button" class="primary" id="btnShare">결과 공유</button>' +
-      '<button type="button" class="secondary" id="btnAgain">한 판 더</button>' +
-      '<div id="moneyPipe" style="margin-top:10px;padding:10px;border:1px solid #e8c56a44;border-radius:12px;background:#16121c;font-size:12px">' +
-      '<div style="color:#e8c56a;font-weight:700;margin-bottom:4px">💎 한 판 더</div>' +
-      '<p style="opacity:.75;margin:0">엔터테인먼트 · 가상 젬 · 18+</p>' +
-      '</div>';
+    sp.innerHTML = '<button type="button" class="primary" id="btnShare">공유</button>';
     $('btnShare').onclick = shareResult;
     var ba=$('btnAgain');
     if(ba) ba.onclick = function(){
@@ -385,7 +363,7 @@
     if (navigator.share) {
       navigator.share({ title: '에코특공대', text: text, url: url }).catch(() => {});
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => alert('복사됨 — K-ref 포함'));
+      navigator.clipboard.writeText(text).then(() => alert('복사됨'));
     } else {
       prompt('복사:', text);
     }
@@ -407,6 +385,7 @@
 
   function offerLevelUp() {
     paused = true;
+    try { $('levelup').querySelector('h2').textContent = '강화 1개'; } catch (e) {}
     const picks = shuffle(POOL.slice()).slice(0, 3);
     const box = $('pick3');
     box.innerHTML = '';

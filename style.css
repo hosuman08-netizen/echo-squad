@@ -53,9 +53,16 @@ button:active{transform:scale(.98)}
 .mini{pointer-events:auto;padding:4px 10px;font-size:12px;background:#22283a;color:#fff;border-radius:8px}
 
 .modal{position:fixed;inset:0;z-index:20;background:rgba(6,8,14,.82);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:10px}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:10px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity var(--t-med) var(--ease-out),visibility var(--t-med) var(--ease-out)}
+.modal:not([hidden]){opacity:1;visibility:visible;pointer-events:auto}
 .modal h2{font-size:20px;margin-bottom:8px}
-.modal[hidden],#boot[hidden],#c[hidden],#hud[hidden]{display:none!important}
+.modal[hidden]{display:flex!important;opacity:0;visibility:hidden;pointer-events:none}
+#boot[hidden],#c[hidden],#hud[hidden]{display:none!important}
+.res-kills{font-size:48px;font-weight:800;color:var(--gold);letter-spacing:-.04em;margin:4px 0 8px}
+.pick{transition:transform var(--t-fast) var(--ease-out),border-color var(--t-fast) var(--ease-out)}
+.pick:active{transform:scale(.98)}
 #pick3{display:flex;flex-direction:column;gap:8px;width:min(340px,100%)}
 .pick{text-align:left;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
   background:var(--surf);color:var(--txt);width:100%;display:flex;align-items:center;gap:12px;justify-content:flex-start}

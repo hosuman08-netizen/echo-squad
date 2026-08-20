@@ -10,7 +10,7 @@
   <meta property="og:description" content="90초 한 판. 스웜 생존 + 빌드 가챠. 설치 없이 바로.">
   <meta property="og:url" content="https://hosuman08-netizen.github.io/echo-squad/">
   <meta name="twitter:card" content="summary">
-  <link rel="stylesheet" href="style.css?v=20260820v">
+  <link rel="stylesheet" href="style.css?v=20260820w">
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -27,7 +27,7 @@
     <button class="ghost" id="btnGacha">🎰 히어로 소환 (가상)</button>
     <p class="rates">소환 확률(가상): SSR 3% · SR 12% · R 35% · N 50% · 천장 보장 없음(컴프 금지) · 18+ 엔터</p>
     <div id="gachaOut" class="gacha-out" hidden></div>
-    <p class="disc">FICTIONAL ENTERTAINMENT · NO CASH VALUE · 탕탕특공대/공식 무관 오마주 학습작 · 18+</p>
+    <p class="disc">가상 엔터 · 공식 무관 · 18+</p>
   </div>
 
   <div id="hud" hidden>
@@ -55,12 +55,11 @@
 
   <div id="result" class="modal" hidden>
     <h2 id="resTitle">생존 결과</h2>
-    
-    <p class="sub" id="resHeroLabel">히어로 선택 후 재돌입</p>
-    <div class="hero-pick" id="resHeroPick"></div>
+    <p id="resBody" class="res-kills"></p>
     <div id="sharePeak" class="share-peak"></div>
     <button class="primary" id="btnAgain">한 판 더</button>
-
+    <p class="sub" id="resHeroLabel">다시 나갈 에코</p>
+    <div class="hero-pick" id="resHeroPick"></div>
   </div>
 
   <div id="pause" class="modal" hidden>
@@ -70,7 +69,7 @@
   </div>
 
   <script src="lung-surprise-eye.js"></script>
-  <script src="game.js"></script>
+  <script src="game.js?v=20260820w"></script>
   <script>window.LEGION_APP='echo-squad';window.LEGION_ANALYTICS_URL='https://legion-analytics.hoyashi95.workers.dev';</script>
   <script src="legion-beacon.js"></script>
 <script>
