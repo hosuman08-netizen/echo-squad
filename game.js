@@ -278,6 +278,14 @@
     $('boot').hidden = true;
     $('c').hidden = false;
     $('hud').hidden = false;
+    try {
+      var sp = $('splash');
+      if (sp) {
+        sp.hidden = false; sp.style.opacity = '1';
+        setTimeout(function () { sp.style.opacity = '0'; }, 900);
+        setTimeout(function () { sp.hidden = true; }, 1200);
+      }
+    } catch (e) {}
     $('result').hidden = true;
     $('levelup').hidden = true;
     $('pause').hidden = true;

@@ -36,6 +36,11 @@ button:active{transform:scale(.98)}
 .cross a{color:var(--cyan);font-size:12px;text-decoration:none}
 .disc{font-size:10px;color:#5c6478;text-align:center;line-height:1.5;margin-top:12px}
 
+#splash{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;letter-spacing:-.4px;color:var(--gold);
+  background:rgba(10,12,18,.72);pointer-events:none;
+  transition:opacity var(--t-med) var(--ease-out)}
+#splash[hidden]{display:none!important;opacity:0}
 #c{display:block;margin:0 auto;width:100%;max-width:420px;height:auto;
   background:#0d1018;touch-action:none}
 #hud{position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
